@@ -155,7 +155,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <div class="mark">proposal<s>.</s> <span style="color:var(--ink3);font-weight:400">/ ZEL Group</span></div>
     <nav class="mast-links" aria-label="Fő navigáció">
       <a href="#folyamat">A folyamat</a>
-      <a href="#kapuk">Kapuk</a>
+      <a href="#kapuk">Ellenőrzések</a>
       <a href="https://github.com/gergolencses-lab/proposal-toolkit">GitHub</a>
     </nav>
   </div>
@@ -164,8 +164,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <h1>Az ajánlatod a te áraidból tanul<span class="dot">.</span></h1>
-      <p class="lede">Öt egymásra épülő Claude&nbsp;Code-skill B2B ajánlatkészítéshez. Egyszer kalibrálsz a <strong>saját, valódi múltbeli ajánlataidból</strong>, utána minden új deal ezen az alapon fut végig: dekódolás, ár-levezetés, verifikált revízió, emberi kiküldés.</p>
+      <h1>A következő ajánlatod nem nulláról indul<span class="dot">.</span></h1>
+      <p class="lede">A Proposal Toolkit a <strong>korábbi ajánlataid alapján alkalmazkodik hozzád</strong>. Segít tisztázni a nyitott kérdéseket, végigvezet az ajánlat elkészítésén, és biztos alapot ad ahhoz, hogy bátran árazd az értéket, amit teremtesz.</p>
       <div class="install">
         <div class="install-bar"><span>CLAUDE CODE</span><button class="copy" data-copy="/plugin marketplace add gergolencses-lab/proposal-toolkit
 /plugin install proposal@zel">másolás</button></div>
@@ -185,81 +185,81 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 <span class="k">| assemble |</span> <span class="v" id="r2">—</span>      <span class="k">|  —   |</span>
 <span class="k">| revise   |</span> <span class="v" id="r3">—</span>      <span class="k">|  —   |</span></pre>
       </div>
-      <p class="hero-note">// minden deal egyetlen állapotfájl — két hét múlva is onnan folytatod</p>
+      <p class="hero-note">// minden ajánlatnak egy állapotfájlja van; később ugyaninnen folytathatod</p>
     </div>
   </div>
 </section>
 
 <section class="principle">
   <div class="wrap inner">
-    <h2>Nulla cégadat<br>a pluginban<em>.</em></h2>
+    <h2>A módszert adja.<br>Az adataid nálad maradnak<em>.</em></h2>
     <div>
-      <p>Nincs beégetett napidíj, horgony-ár, stílus vagy útvonal. A plugin a <strong style="color:var(--ink)">módszert</strong> adja; a számok a tieid, és a te gépeden maradnak. A kalibráció az <span style="font-family:var(--mono);font-size:.88em">init</span> futásakor, a saját memória-könyvtáradban jön létre; a repo felé semmi nem megy vissza.</p>
-      <p>Ezért adható át: ugyanaz a workflow minden cégnél a saját árazását és a saját hangját beszéli.</p>
-      <span class="path">~/…/memory/proposal/&lt;céged&gt;/economics.md · house-style.md — csak nálad</span>
+      <p>A bővítményben nincs előre beállított napidíj, referenciaár, stílus vagy tárolási útvonal. A kalibrálás során a <strong style="color:var(--ink)">saját ajánlataidból</strong> építi fel az árazási tudást és a céges hangot. Mindez a gépeden marad; a repóba semmi nem kerül vissza.</p>
+      <p>Ezért ugyanaz a bővítmény mindenkinél másképp működik: a te korábbi áraiddal számol, és a te stílusodban ír.</p>
+      <span class="path">~/…/memory/proposal/&lt;céged&gt;/economics.md · house-style.md · csak nálad</span>
     </div>
   </div>
 </section>
 
 <section class="life" id="folyamat">
   <div class="wrap">
-    <h2 class="sect">Egy deal élete<span style="color:var(--red)">.</span></h2>
-    <p class="sub">Öt skill, egy állapotgép. A vonal mentén a <span style="font-family:var(--mono);font-size:.88em">deal.md</span> státusza lépked — görgess, és nézd a chipet a jobb felső sarokban.</p>
+    <h2 class="sect">Egy ajánlat útja<span style="color:var(--red)">.</span></h2>
+    <p class="sub">Öt parancs, egy követhető folyamat. A <span style="font-family:var(--mono);font-size:.88em">deal.md</span> mindig megmutatja, hol tart az ajánlat. Görgess, és figyeld az állapotot a jobb felső sarokban.</p>
 
     <div class="steps">
       <div class="spine" aria-hidden="true"><i id="spinefill"></i></div>
 
       <article class="step reveal" data-status="—">
         <div>
-          <h3>Kalibráció<span class="cmd"><b>/proposal:init</b> — egyszer, cégenként</span></h3>
+          <h3>Kalibrálás<span class="cmd"><b>/proposal:init</b> · egyszer minden cégnél</span></h3>
         </div>
         <div class="body">
-          <p>Odaadsz 3–4 valós, elküldött ajánlatot. A skill kiolvassa belőlük a <strong>gazdasági logikádat</strong> (minden árazott tételt egyenként: mit fedett, mennyiért, mi lett belőle) és a <strong>házi stílusodat</strong>: hangnem, szerkezet, formázás, kereskedelmi szokások.</p>
-          <p>Belső munkaanyagból se ár, se stílus nem kalibrálódik; csak abból, ami tényleg kiment.</p>
-          <div class="artefact">→ <b>economics.md</b> (árazott tételek, marzs-szabályok) · <b>house-style.md</b> (hang, váz, render-lánc)</div>
+          <p>Odaadsz 3–4 valós, korábban elküldött ajánlatot. Az <span style="font-family:var(--mono);font-size:.88em">init</span> ezekből feltérképezi, hogyan árazol: mit adtál el, mennyiért, és mi lett az ajánlat eredménye. Emellett megtanulja a céged hangját, dokumentumszerkezetét, formázását és kereskedelmi szokásait.</p>
+          <p>Csak ügyfélnek valóban elküldött ajánlatból tanul. Belső munkaanyagból nem vesz át sem árat, sem stílust.</p>
+          <div class="artefact">→ <b>economics.md</b> (árazott tételek, marzsszabályok) · <b>house-style.md</b> (hang, szerkezet, dokumentumkészítés)</div>
         </div>
       </article>
 
       <article class="step reveal" data-status="discovery">
         <div>
-          <h3>Dekódolás<span class="cmd"><b>/proposal:clarify</b> — minden új dealre</span></h3>
+          <h3>Tisztázás<span class="cmd"><b>/proposal:clarify</b> · minden új ajánlatnál</span></h3>
         </div>
         <div class="body">
-          <p>Mielőtt egy sor ajánlat íródna: ki dönt valójában, mi fáj, mi a beszerzési út, mik a kényszerek. Négy forrássáv (levelezés, átadott anyagok, publikus cégháttér, saját memória), és minden ténynek forrása van.</p>
-          <p>A futás fő haszna a <strong>Következő 3 kérdés</strong>: a legdrágább bizonytalanságokat célzó, a következő hívásra vihető kérdések.</p>
-          <div class="artefact">→ <b>clarify-•.md</b> (döntési térkép, fájdalom, kényszerek, kérdések) · status: discovery</div>
+          <p>Mielőtt egyetlen sor ajánlat elkészülne, a <span style="font-family:var(--mono);font-size:.88em">clarify</span> összerakja a döntési helyzetet: ki dönt, milyen problémát kell megoldani, hogyan zajlik a beszerzés, és milyen korlátokhoz kell alkalmazkodni. A levelezést, az átadott anyagokat, a nyilvános cégadatokat és a saját memóriát külön forrásként kezeli; minden állításhoz megőrzi a forrást.</p>
+          <p>A legfontosabb eredménye a <strong>Következő 3 kérdés</strong>: azok a nyitott kérdések, amelyek téves megítélése a legtöbb pénzbe vagy munkába kerülhet.</p>
+          <div class="artefact">→ <b>clarify-•.md</b> (döntési helyzet, probléma, korlátok, kérdések) · status: discovery</div>
         </div>
       </article>
 
       <article class="step reveal" data-status="solutioning">
         <div>
-          <h3>Összeállítás<span class="cmd"><b>/proposal:assemble</b> — a dokumentum</span></h3>
+          <h3>Összeállítás<span class="cmd"><b>/proposal:assemble</b> · a dokumentum</span></h3>
         </div>
         <div class="body">
-          <p>Scope mérhető átvételi feltételekkel, és ár, amely a <strong>saját megnevezett, korábbi tételeidhez</strong> pozicionál, kötelezően kiírt levezetéssel. Tárolt napidíjat sosem szoroz: kettőnél kevesebb összemérhetőnél kérdez, nem becsül.</p>
-          <p>Az árbemutatás szabálya: csomagár, visszaosztható idő-tört nélkül. Amit a beszerzés vissza tud osztani egységárra, azt vissza is fogja.</p>
-          <div class="artefact">→ <b>proposal-master-•.md</b> + renderelt docx/PDF · belső jegyzet külön, az ügyfél sosem látja</div>
+          <p>Az <span style="font-family:var(--mono);font-size:.88em">assemble</span> mérhető vállalásokat és átvételi feltételeket ír az ajánlatba. Az árat megnevezett, hasonló korábbi tételeidhez viszonyítja, és a levezetést is megmutatja. Nem számol automatikusan eltárolt napidíjjal; ha nincs legalább két érdemben összevethető tétel, kérdez, nem találgat.</p>
+          <p>Az ügyfél csomagárat lát, nem órákra vagy napokra könnyen visszaosztható részletezést. Amit a beszerzés egységárra tud bontani, azt össze is fogja hasonlítani.</p>
+          <div class="artefact">→ <b>proposal-master-•.md</b> + elkészített DOCX/PDF · a belső jegyzet külön marad, az ügyfél nem látja</div>
         </div>
       </article>
 
       <article class="step reveal" data-status="solutioning">
         <div>
-          <h3>Revízió<span class="cmd"><b>/proposal:revise</b> — a visszajelzés-kör</span></h3>
+          <h3>Revízió<span class="cmd"><b>/proposal:revise</b> · a visszajelzési kör</span></h3>
         </div>
         <div class="body">
-          <p>Ajánlat ritkán megy ki első verzióban. Minden észrevétel <strong>előbb verifikálódik a tényleges szövegen</strong>: ami nem áll, azt a rendszer kimondja, nem „javítja". Elütést magától javít; árat, scope-ot érintő döntésnél megáll és kérdez.</p>
-          <p>Ha kézzel szerkesztetted a dokumentumot, az az igazság: a revízió abból indul, sosem egy elavult masterből.</p>
-          <div class="artefact">→ verziózott artefakt (v2.1 → v2.2 …) · a master utánahúzva · a kapuk újrafutnak</div>
+          <p>Ajánlat ritkán megy ki első változatban. A <span style="font-family:var(--mono);font-size:.88em">revise</span> minden észrevételt előbb összevet a dokumentum tényleges szövegével. Ha a visszajelzés nem állja meg a helyét, ezt jelzi; nem végez indokolatlan módosítást. Az elütéseket kijavítja, de ha a kérés az árat vagy a vállalt tartalmat érinti, megáll és kérdez.</p>
+          <p>Ha kézzel módosítottad a dokumentumot, mindig abból indul ki. Nem írja felül egy régebbi forrásváltozattal.</p>
+          <div class="artefact">→ verziózott dokumentum (v2.1 → v2.2 …) · a forrásdokumentum frissül · az ellenőrzések újra lefutnak</div>
         </div>
       </article>
 
       <article class="step reveal" data-status="sent">
         <div>
-          <h3>Terelés<span class="cmd"><b>/proposal:drive</b> — a router</span></h3>
+          <h3>drive<span class="cmd"><b>/proposal:drive</b> · megmutatja, hogyan tovább</span></h3>
         </div>
         <div class="body">
-          <p>Nem kell fejben tartani, hol tart a deal: a <span style="font-family:var(--mono);font-size:.88em">drive</span> a státuszból megmondja a következő lépést, és odaterel. A <strong>kiküldés viszont mindig a tiéd</strong>: a rendszer fájlt ír, emailt soha nem küld, és a „kiment"-et is csak a te szavadra jegyzi fel.</p>
-          <div class="artefact">→ status: sent — kizárólag emberi közlésre · win/loss elemzés: v2 bővítés</div>
+          <p>A <span style="font-family:var(--mono);font-size:.88em">drive</span> megnézi, hol tart az ajánlat, majd a következő lépéshez vezet. Nem kell fejben tartanod a sorrendet. Ha félbehagytad a munkát, akár hetekkel később is ugyanonnan folytathatod. A <strong>kiküldés viszont mindig a te döntésed</strong>: a rendszer elkészíti a fájlt, de nem küldi el helyetted.</p>
+          <div class="artefact">→ status: sent · csak akkor, amikor te jelzed, hogy kiment · win/loss elemzés: v2-es bővítés</div>
         </div>
       </article>
     </div>
@@ -269,30 +269,30 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 <section class="gates" id="kapuk">
   <div class="wrap">
     <h2>Ahol a rendszer megáll<span style="color:var(--red)">.</span></h2>
-    <p class="sub">A gyorsaság nem ér annyit, mint egy rossz szám az ügyfél előtt. Négy kapu, mindegyik kötelező, és kettő közülük embernél áll meg.</p>
+    <p class="sub">A gyorsaság semmit nem ér, ha hibás szám kerül az ügyfél elé. Négy kötelező ellenőrzés védi az ajánlatot; közülük kettőnél csak te dönthetsz a folytatásról.</p>
     <div class="ledger">
       <div class="g-row">
-        <div class="g-name">Számítási kapu<span>ASSEMBLE · REVISE</span></div>
-        <div class="g-what">Minden számpár keresztellenőrizve, nem csak az ár: tételes = összesített, nettó × ÁFA = bruttó, létszám × arány = ígért kapacitás, idő-blokkok = időkeret.</div>
-        <div class="g-halt">eltérésnél: diagnózis</div>
+        <div class="g-name">Számok ellenőrzése<span>ASSEMBLE · REVISE</span></div>
+        <div class="g-what">Minden összefüggő számot ellenőriz: tételes összegek és végösszeg; nettó, áfa és bruttó; létszám és ígért kapacitás; részidők és teljes időkeret.</div>
+        <div class="g-halt">eltérésnél megáll és megmutatja a hibát</div>
       </div>
       <div class="g-row">
-        <div class="g-name">Ár-kapu<span>ASSEMBLE · REVISE</span></div>
-        <div class="g-what">Ha az ár a plafon, a legalacsonyabb nyert összemérhető vagy a költség-padló alá menne, a folyamat megáll. A döntés (árvágás, scope-vágás, nemet mondás) a tiéd.</div>
+        <div class="g-name">Árazási ellenőrzés<span>ASSEMBLE · REVISE</span></div>
+        <div class="g-what">A folyamat megáll, ha a javasolt ár meghaladja az ügyfél keretét, vagy a legalacsonyabb nyertes összehasonlítható ajánlat, illetve a minimális elfogadható ár alá esne. Te döntesz: árat csökkentesz, szűkíted a vállalást, vagy nemet mondasz.</div>
         <div class="g-halt">MEGÁLL — emberi döntés</div>
       </div>
       <div class="g-row">
-        <div class="g-name">Render-QA<span>A KÉSZ KIMENETEN</span></div>
-        <div class="g-what">Oldalkép (nincs üres utolsó oldal), magyar/CEE karakterek hibátlanul, és a számok a renderelt szövegben is stimmelnek, abban a programban mérve, amiben az ügyfél nézi majd.</div>
-        <div class="g-halt">0 hibáig nem megy ki</div>
+        <div class="g-name">A kész dokumentum ellenőrzése<span>DOCX · PDF</span></div>
+        <div class="g-what">Azt a fájlt ellenőrzi, amelyet az ügyfél megkap: nincs üres utolsó oldal, minden magyar karakter helyesen jelenik meg, és a számok a kész dokumentumban is stimmelnek.</div>
+        <div class="g-halt">hibával nem megy ki</div>
       </div>
       <div class="g-row">
-        <div class="g-name">Kiküldés-kapu<span>MINDIG</span></div>
-        <div class="g-what">A rendszer fájlt ír. Emailt nem küld, nem posztol, nem oszt meg: az ajánlat elküldése és a deal lezárása kizárólag emberi tény.</div>
+        <div class="g-name">Kiküldés jóváhagyása<span>MINDIG</span></div>
+        <div class="g-what">A rendszer fájlt készít. E-mailt nem küld, nem posztol és nem oszt meg: az ajánlat elküldéséről és lezárásáról mindig te döntesz.</div>
         <div class="g-halt">MEGÁLL — a te gombod</div>
       </div>
     </div>
-    <p class="aside"><b>Bizalmassági szabály:</b> a belső jegyzet (kalibráció, marzs, flagek) sosem kerül az ügyfél példányába; a kliens-szöveg csak azt mondja, ami rá tartozik.</p>
+    <p class="aside"><b>Bizalmassági szabály:</b> a belső jegyzetek (például a kalibrálás adatai, a marzsok és a figyelmeztetések) sosem kerülnek az ügyfélnek szánt dokumentumba.</p>
   </div>
 </section>
 
@@ -300,7 +300,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   <div class="wrap close-grid">
     <div>
       <h2>A módszer nyílt.<br>A számaid a tieid<span style="color:var(--red)">.</span></h2>
-      <p>MIT-licenc, teljes forrás, saját higiénia-validátorral. Telepítsd, futtasd az <span style="font-family:var(--mono);font-size:.88em">init</span>-et a saját ajánlataidon, és az első dealed már a te áraidból beszél.</p>
+      <p>Nyílt forráskód, <a href="https://github.com/gergolencses-lab/proposal-toolkit/blob/main/LICENSE">MIT-licenc</a> és beépített ellenőrzések. Telepítsd, kalibráld a saját ajánlataiddal, és a következő ajánlatod már arra épül, ami nálad korábban működött.</p>
       <a class="cta" href="https://github.com/gergolencses-lab/proposal-toolkit">Nyisd meg a GitHubon
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
@@ -315,7 +315,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
 <footer>
   <div class="wrap foot">
-    <span>proposal · MIT © 2026 <a href="https://www.zel-group.com">ZEL Group</a></span>
+    <span>proposal · <a href="https://github.com/gergolencses-lab/proposal-toolkit/blob/main/LICENSE">MIT</a> © 2026 <a href="https://www.zel-group.com">ZEL Group</a></span>
     <span><a href="https://github.com/gergolencses-lab/proposal-toolkit">github.com/gergolencses-lab/proposal-toolkit</a></span>
   </div>
 </footer>
