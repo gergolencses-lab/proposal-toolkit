@@ -1,0 +1,13 @@
+{
+  "name": "zel",
+  "owner": {
+    "name": "Lencsés Gergő"
+  },
+  "plugins": [
+    {
+      "name": "proposal",
+      "source": "./",
+      "description": "End-to-end B2B proposal workflow — calibrated from your own past offers, with verified revision rounds"
+    }
+  ]
+}

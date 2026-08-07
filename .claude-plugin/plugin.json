@@ -1,0 +1,9 @@
+{
+  "name": "proposal",
+  "description": "End-to-end B2B proposal workflow — calibrate the company's economics and house style from its real past offers, decode a new deal, assemble the proposal document, run verified revision rounds on feedback, and route between the steps.",
+  "version": "1.4.1",
+  "author": {
+    "name": "Lencsés Gergő",
+    "email": "gergo@zelgroup.hu"
+  }
+}

@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>proposal — ajánlat-workflow Claude Code-hoz</title>
+<meta name="description" content="Öt egymásra épülő Claude Code skill: egyszer kalibrálsz a saját múltbeli ajánlataidból, utána minden dealt ezen az alapon futtatsz végig, kapukkal, verifikált revízióval, emberi kiküldéssel.">
+<style>
+:root{
+  --bg:#141619; --bg2:#1a1d21; --ink:#eceae6; --ink2:#a3a49f; --ink3:#6d6f6a;
+  --red:#e8352b; --red-dim:#b3271f; --hair:rgba(236,234,230,.14); --hair2:rgba(236,234,230,.07);
+  --mono:"SF Mono","Cascadia Code","JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--red);color:#fff}
+a{color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+
+/* ── top rail ── */
+.rail{position:fixed;inset:0 auto 0 0;width:24px;border-right:1px solid var(--hair2);z-index:5;pointer-events:none}
+@media(max-width:900px){.rail{display:none}}
+
+header{border-bottom:1px solid var(--hair)}
+.masthead{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;gap:16px}
+.mark{font-weight:700;letter-spacing:-.01em;font-size:15px}
+.mark s{color:var(--red);text-decoration:none}
+.mast-links{display:flex;gap:22px;font-size:13px;color:var(--ink2)}
+.mast-links a{text-decoration:none;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+.mast-links a:hover{color:var(--ink);border-color:var(--red)}
+.mast-links a{white-space:nowrap}
+.mark{white-space:nowrap}
+@media(max-width:520px){.mark span{display:none}.mast-links{gap:16px;font-size:12px}}
+
+/* ── hero ── */
+.hero{padding:88px 0 76px;border-bottom:1px solid var(--hair);position:relative}
+.hero-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:56px;align-items:start}
+@media(max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero{padding:56px 0 48px}}
+h1{font-size:clamp(2.1rem,8.5vw,4.4rem);line-height:1.04;letter-spacing:-.03em;font-weight:700}
+h1 .dot{color:var(--red)}
+.hero p.lede{margin-top:26px;font-size:19px;color:var(--ink2);max-width:34em}
+.hero p.lede strong{color:var(--ink);font-weight:600}
+.install{margin-top:36px;border:1px solid var(--hair);background:var(--bg2)}
+.install-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--hair2);font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.08em}
+.install pre{padding:16px 18px;font-family:var(--mono);font-size:13.5px;line-height:1.8;color:var(--ink);overflow-x:auto}
+.install pre em{font-style:normal;color:var(--ink3)}
+button.copy{all:unset;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--ink2);padding:2px 8px;border:1px solid var(--hair);transition:color .2s,border-color .2s}
+button.copy:hover,button.copy:focus-visible{color:#fff;border-color:var(--red)}
+button.copy:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+/* hero deal.md card */
+.dealcard{border:1px solid var(--hair);background:var(--bg2);font-family:var(--mono);font-size:13px;line-height:1.9;position:relative}
+.dealcard .cap{display:flex;justify-content:space-between;gap:10px;padding:8px 14px;border-bottom:1px solid var(--hair2);font-size:11px;color:var(--ink3);letter-spacing:.08em}
+.dealcard .cap span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.dealcard .cap .chip{flex:none}
+.dealcard pre{padding:16px 18px;overflow-x:auto;color:var(--ink2)}
+.dealcard .k{color:var(--ink3)} .dealcard .v{color:var(--ink)}
+.chip{display:inline-block;padding:0 8px;border:1px solid var(--red);color:var(--red);font-size:11.5px;letter-spacing:.06em;min-width:9.5ch;text-align:center}
+.hero-note{margin-top:14px;font-size:13px;color:var(--ink3);font-family:var(--mono)}
+.floatchip{position:fixed;top:12px;right:24px;z-index:20;font-family:var(--mono);font-size:11px;color:var(--ink3);
+  background:var(--bg2);border:1px solid var(--hair);padding:6px 10px;display:flex;gap:9px;align-items:center;
+  opacity:0;transform:translateY(-8px);transition:opacity .45s cubic-bezier(.16,1,.3,1),transform .45s cubic-bezier(.16,1,.3,1);pointer-events:none}
+.floatchip.on{opacity:1;transform:none}
+
+/* ── principle band ── */
+.principle{border-bottom:1px solid var(--hair);background:var(--bg2)}
+.principle .inner{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;padding:64px 24px}
+@media(max-width:900px){.principle .inner{grid-template-columns:minmax(0,1fr);gap:24px;padding:48px 24px}}
+.principle h2{font-size:clamp(1.6rem,3.2vw,2.4rem);letter-spacing:-.02em;line-height:1.1}
+.principle h2 em{font-style:normal;color:var(--red)}
+.principle p{color:var(--ink2);max-width:36em}
+.principle p+p{margin-top:14px}
+.principle .path{font-family:var(--mono);font-size:12.5px;color:var(--ink3);margin-top:18px;display:block}
+
+/* ── lifecycle ── */
+.life{padding:88px 0 40px;position:relative}
+.life h2.sect{font-size:clamp(1.9rem,4vw,3rem);letter-spacing:-.025em;margin-bottom:8px}
+.life p.sub{color:var(--ink2);max-width:38em;margin-bottom:64px}
+.steps{position:relative}
+.spine{position:absolute;left:7px;top:12px;bottom:12px;width:1px;background:var(--hair)}
+.spine i{position:absolute;left:0;top:0;width:1px;height:0;background:var(--red);transition:none}
+@media(max-width:640px){.spine{left:5px}}
+.step{position:relative;display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:40px;padding:0 0 92px 56px}
+@media(max-width:900px){.step{grid-template-columns:minmax(0,1fr);gap:14px;padding-left:40px;padding-bottom:64px}}
+.step::before{content:"";position:absolute;left:3px;top:10px;width:9px;height:9px;background:var(--bg);
+  border:1px solid var(--ink3);transform:rotate(45deg);transition:border-color .4s,background .4s}
+@media(max-width:640px){.step::before{left:1px}}
+.step.lit::before{border-color:var(--red);background:var(--red)}
+.step h3{font-size:clamp(1.5rem,2.6vw,2.1rem);letter-spacing:-.02em;line-height:1.05}
+.step h3 .cmd{display:block;font-family:var(--mono);font-weight:400;font-size:12.5px;letter-spacing:.02em;color:var(--ink3);margin-top:10px}
+.step h3 .cmd b{color:var(--red);font-weight:400}
+.step .body p{color:var(--ink2);max-width:34em}
+.step .body p strong{color:var(--ink);font-weight:600}
+.step .body p+p{margin-top:12px}
+.artefact{margin-top:20px;font-family:var(--mono);font-size:12px;color:var(--ink3);border-top:1px solid var(--hair2);padding-top:10px;max-width:34em;line-height:1.8}
+.artefact b{color:var(--ink2);font-weight:400}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ── gates ── */
+.gates{border-top:1px solid var(--hair);padding:88px 0}
+.gates h2{font-size:clamp(1.9rem,4vw,3rem);letter-spacing:-.025em}
+.gates p.sub{color:var(--ink2);max-width:38em;margin:10px 0 52px}
+.ledger{border:1px solid var(--hair)}
+.g-row{display:grid;grid-template-columns:220px minmax(0,1fr) 200px;border-bottom:1px solid var(--hair2)}
+.g-row:last-child{border-bottom:0}
+.g-row>div{padding:22px 24px}
+.g-name{font-weight:600;letter-spacing:-.01em}
+.g-name span{display:block;font-family:var(--mono);font-weight:400;font-size:11px;color:var(--ink3);margin-top:6px;letter-spacing:.06em}
+.g-what{color:var(--ink2);font-size:15.5px;border-left:1px solid var(--hair2)}
+.g-halt{font-family:var(--mono);font-size:12px;color:var(--red);border-left:1px solid var(--hair2);display:flex;align-items:center}
+@media(max-width:900px){.g-row{grid-template-columns:minmax(0,1fr)}.g-what,.g-halt{border-left:0;border-top:1px solid var(--hair2)}.g-halt{padding-top:14px}}
+.gates .aside{margin-top:22px;font-size:14px;color:var(--ink3);max-width:44em}
+.gates .aside b{color:var(--ink2);font-weight:600}
+
+/* ── close ── */
+.close{border-top:1px solid var(--hair);padding:88px 0 96px;background:var(--bg2)}
+.close-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:56px;align-items:end}
+@media(max-width:900px){.close-grid{grid-template-columns:minmax(0,1fr)}}
+.close h2{font-size:clamp(1.9rem,4vw,2.8rem);letter-spacing:-.025em;line-height:1.08}
+.close p{margin-top:18px;color:var(--ink2);max-width:32em}
+.cta{display:inline-flex;align-items:center;gap:12px;margin-top:34px;padding:14px 26px;border:1px solid var(--red);
+  color:var(--ink);text-decoration:none;font-size:15px;font-weight:600;letter-spacing:.01em;transition:background .25s,color .25s}
+.cta:hover,.cta:focus-visible{background:var(--red);color:#fff}
+.cta:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.cta svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6}
+footer{border-top:1px solid var(--hair)}
+.foot{display:flex;justify-content:space-between;align-items:center;padding:22px 24px;font-size:13px;color:var(--ink3);gap:14px;flex-wrap:wrap}
+.foot a{color:var(--ink2);text-decoration:none;border-bottom:1px solid transparent}
+.foot a:hover{color:var(--ink);border-color:var(--red)}
+
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<!--
+THESIS: az ajánlat-workflow nem varázslat, hanem állapotgép — a lap gerince maga a deal.md státusz-átmenete; elutasítja a feature-kártyarácsos plugin-landingot.
+OWN-WORLD: ZEL Style D sötétben — charcoal alap (#141619), egyetlen signal-red (#e8352b), Helvetica-first, hairline-vonalak, mono a parancsoknak és állapotoknak; tartalom nélkül is felismerhető: vonal + piros chip + rombusz-csomópontok.
+STORY: a látogató (Gergő kliense, vezető) megérti: egyszer kalibrál a saját ajánlataiból, a plugin nem viszi el az adatait, a folyamat kapuknál megáll — és két sorral telepíti.
+FIRST VIEWPORT: bal 7 oszlop cím + lede + telepítő parancsblokk; jobb 5 oszlop élő deal.md-kártya váltakozó státusz-chippel; alul mono megjegyzés.
+FORM: brand-horgonyzott (Style D), nem sorsolt — a megrendelő pinned házi stílusa; seed: n/a.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
+<div class="rail" aria-hidden="true"></div>
+<div class="floatchip" id="floatchip" aria-hidden="true">deal.md<span class="chip" id="chip2">new</span></div>
+
+<header>
+  <div class="wrap masthead">
+    <div class="mark">proposal<s>.</s> <span style="color:var(--ink3);font-weight:400">/ ZEL Group</span></div>
+    <nav class="mast-links" aria-label="Fő navigáció">
+      <a href="#folyamat">A folyamat</a>
+      <a href="#kapuk">Kapuk</a>
+      <a href="https://github.com/gergolencses-lab/proposal-toolkit">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>Az ajánlatod a te áraidból tanul<span class="dot">.</span></h1>
+      <p class="lede">Öt egymásra épülő Claude&nbsp;Code-skill B2B ajánlatkészítéshez. Egyszer kalibrálsz a <strong>saját, valódi múltbeli ajánlataidból</strong>, utána minden új deal ezen az alapon fut végig: dekódolás, ár-levezetés, verifikált revízió, emberi kiküldés.</p>
+      <div class="install">
+        <div class="install-bar"><span>CLAUDE CODE</span><button class="copy" data-copy="/plugin marketplace add gergolencses-lab/proposal-toolkit
+/plugin install proposal@zel">másolás</button></div>
+        <pre>/plugin marketplace add gergolencses-lab/proposal-toolkit
+/plugin install proposal@zel   <em># ennyi</em></pre>
+      </div>
+    </div>
+    <div>
+      <div class="dealcard" aria-label="Példa deal-állapotfájl">
+        <div class="cap"><span>deals/meridian-energia/deal.md</span><span class="chip" id="chip">new</span></div>
+        <pre><span class="k">company:</span> <span class="v">acme-tanacsado</span>
+<span class="k">status:</span>  <span class="v" id="statusline">new</span>
+
+<span class="k">| lépés    | mikor  | flag |</span>
+<span class="k">|----------|--------|------|</span>
+<span class="k">| clarify  |</span> <span class="v" id="r1">—</span>      <span class="k">|  —   |</span>
+<span class="k">| assemble |</span> <span class="v" id="r2">—</span>      <span class="k">|  —   |</span>
+<span class="k">| revise   |</span> <span class="v" id="r3">—</span>      <span class="k">|  —   |</span></pre>
+      </div>
+      <p class="hero-note">// minden deal egyetlen állapotfájl — két hét múlva is onnan folytatod</p>
+    </div>
+  </div>
+</section>
+
+<section class="principle">
+  <div class="wrap inner">
+    <h2>Nulla cégadat<br>a pluginban<em>.</em></h2>
+    <div>
+      <p>Nincs beégetett napidíj, horgony-ár, stílus vagy útvonal. A plugin a <strong style="color:var(--ink)">módszert</strong> adja; a számok a tieid, és a te gépeden maradnak. A kalibráció az <span style="font-family:var(--mono);font-size:.88em">init</span> futásakor, a saját memória-könyvtáradban jön létre; a repo felé semmi nem megy vissza.</p>
+      <p>Ezért adható át: ugyanaz a workflow minden cégnél a saját árazását és a saját hangját beszéli.</p>
+      <span class="path">~/…/memory/proposal/&lt;céged&gt;/economics.md · house-style.md — csak nálad</span>
+    </div>
+  </div>
+</section>
+
+<section class="life" id="folyamat">
+  <div class="wrap">
+    <h2 class="sect">Egy deal élete<span style="color:var(--red)">.</span></h2>
+    <p class="sub">Öt skill, egy állapotgép. A vonal mentén a <span style="font-family:var(--mono);font-size:.88em">deal.md</span> státusza lépked — görgess, és nézd a chipet a jobb felső sarokban.</p>
+
+    <div class="steps">
+      <div class="spine" aria-hidden="true"><i id="spinefill"></i></div>
+
+      <article class="step reveal" data-status="—">
+        <div>
+          <h3>Kalibráció<span class="cmd"><b>/proposal:init</b> — egyszer, cégenként</span></h3>
+        </div>
+        <div class="body">
+          <p>Odaadsz 3–4 valós, elküldött ajánlatot. A skill kiolvassa belőlük a <strong>gazdasági logikádat</strong> (minden árazott tételt egyenként: mit fedett, mennyiért, mi lett belőle) és a <strong>házi stílusodat</strong>: hangnem, szerkezet, formázás, kereskedelmi szokások.</p>
+          <p>Belső munkaanyagból se ár, se stílus nem kalibrálódik; csak abból, ami tényleg kiment.</p>
+          <div class="artefact">→ <b>economics.md</b> (árazott tételek, marzs-szabályok) · <b>house-style.md</b> (hang, váz, render-lánc)</div>
+        </div>
+      </article>
+
+      <article class="step reveal" data-status="discovery">
+        <div>
+          <h3>Dekódolás<span class="cmd"><b>/proposal:clarify</b> — minden új dealre</span></h3>
+        </div>
+        <div class="body">
+          <p>Mielőtt egy sor ajánlat íródna: ki dönt valójában, mi fáj, mi a beszerzési út, mik a kényszerek. Négy forrássáv (levelezés, átadott anyagok, publikus cégháttér, saját memória), és minden ténynek forrása van.</p>
+          <p>A futás fő haszna a <strong>Következő 3 kérdés</strong>: a legdrágább bizonytalanságokat célzó, a következő hívásra vihető kérdések.</p>
+          <div class="artefact">→ <b>clarify-•.md</b> (döntési térkép, fájdalom, kényszerek, kérdések) · status: discovery</div>
+        </div>
+      </article>
+
+      <article class="step reveal" data-status="solutioning">
+        <div>
+          <h3>Összeállítás<span class="cmd"><b>/proposal:assemble</b> — a dokumentum</span></h3>
+        </div>
+        <div class="body">
+          <p>Scope mérhető átvételi feltételekkel, és ár, amely a <strong>saját megnevezett, korábbi tételeidhez</strong> pozicionál, kötelezően kiírt levezetéssel. Tárolt napidíjat sosem szoroz: kettőnél kevesebb összemérhetőnél kérdez, nem becsül.</p>
+          <p>Az árbemutatás szabálya: csomagár, visszaosztható idő-tört nélkül. Amit a beszerzés vissza tud osztani egységárra, azt vissza is fogja.</p>
+          <div class="artefact">→ <b>proposal-master-•.md</b> + renderelt docx/PDF · belső jegyzet külön, az ügyfél sosem látja</div>
+        </div>
+      </article>
+
+      <article class="step reveal" data-status="solutioning">
+        <div>
+          <h3>Revízió<span class="cmd"><b>/proposal:revise</b> — a visszajelzés-kör</span></h3>
+        </div>
+        <div class="body">
+          <p>Ajánlat ritkán megy ki első verzióban. Minden észrevétel <strong>előbb verifikálódik a tényleges szövegen</strong>: ami nem áll, azt a rendszer kimondja, nem „javítja". Elütést magától javít; árat, scope-ot érintő döntésnél megáll és kérdez.</p>
+          <p>Ha kézzel szerkesztetted a dokumentumot, az az igazság: a revízió abból indul, sosem egy elavult masterből.</p>
+          <div class="artefact">→ verziózott artefakt (v2.1 → v2.2 …) · a master utánahúzva · a kapuk újrafutnak</div>
+        </div>
+      </article>
+
+      <article class="step reveal" data-status="sent">
+        <div>
+          <h3>Terelés<span class="cmd"><b>/proposal:drive</b> — a router</span></h3>
+        </div>
+        <div class="body">
+          <p>Nem kell fejben tartani, hol tart a deal: a <span style="font-family:var(--mono);font-size:.88em">drive</span> a státuszból megmondja a következő lépést, és odaterel. A <strong>kiküldés viszont mindig a tiéd</strong>: a rendszer fájlt ír, emailt soha nem küld, és a „kiment"-et is csak a te szavadra jegyzi fel.</p>
+          <div class="artefact">→ status: sent — kizárólag emberi közlésre · win/loss elemzés: v2 bővítés</div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="gates" id="kapuk">
+  <div class="wrap">
+    <h2>Ahol a rendszer megáll<span style="color:var(--red)">.</span></h2>
+    <p class="sub">A gyorsaság nem ér annyit, mint egy rossz szám az ügyfél előtt. Négy kapu, mindegyik kötelező, és kettő közülük embernél áll meg.</p>
+    <div class="ledger">
+      <div class="g-row">
+        <div class="g-name">Számítási kapu<span>ASSEMBLE · REVISE</span></div>
+        <div class="g-what">Minden számpár keresztellenőrizve, nem csak az ár: tételes = összesített, nettó × ÁFA = bruttó, létszám × arány = ígért kapacitás, idő-blokkok = időkeret.</div>
+        <div class="g-halt">eltérésnél: diagnózis</div>
+      </div>
+      <div class="g-row">
+        <div class="g-name">Ár-kapu<span>ASSEMBLE · REVISE</span></div>
+        <div class="g-what">Ha az ár a plafon, a legalacsonyabb nyert összemérhető vagy a költség-padló alá menne, a folyamat megáll. A döntés (árvágás, scope-vágás, nemet mondás) a tiéd.</div>
+        <div class="g-halt">MEGÁLL — emberi döntés</div>
+      </div>
+      <div class="g-row">
+        <div class="g-name">Render-QA<span>A KÉSZ KIMENETEN</span></div>
+        <div class="g-what">Oldalkép (nincs üres utolsó oldal), magyar/CEE karakterek hibátlanul, és a számok a renderelt szövegben is stimmelnek, abban a programban mérve, amiben az ügyfél nézi majd.</div>
+        <div class="g-halt">0 hibáig nem megy ki</div>
+      </div>
+      <div class="g-row">
+        <div class="g-name">Kiküldés-kapu<span>MINDIG</span></div>
+        <div class="g-what">A rendszer fájlt ír. Emailt nem küld, nem posztol, nem oszt meg: az ajánlat elküldése és a deal lezárása kizárólag emberi tény.</div>
+        <div class="g-halt">MEGÁLL — a te gombod</div>
+      </div>
+    </div>
+    <p class="aside"><b>Bizalmassági szabály:</b> a belső jegyzet (kalibráció, marzs, flagek) sosem kerül az ügyfél példányába; a kliens-szöveg csak azt mondja, ami rá tartozik.</p>
+  </div>
+</section>
+
+<section class="close">
+  <div class="wrap close-grid">
+    <div>
+      <h2>A módszer nyílt.<br>A számaid a tieid<span style="color:var(--red)">.</span></h2>
+      <p>MIT-licenc, teljes forrás, saját higiénia-validátorral. Telepítsd, futtasd az <span style="font-family:var(--mono);font-size:.88em">init</span>-et a saját ajánlataidon, és az első dealed már a te áraidból beszél.</p>
+      <a class="cta" href="https://github.com/gergolencses-lab/proposal-toolkit">Nyisd meg a GitHubon
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="install">
+      <div class="install-bar"><span>TELEPÍTÉS</span><button class="copy" data-copy="/plugin marketplace add gergolencses-lab/proposal-toolkit
+/plugin install proposal@zel">másolás</button></div>
+      <pre>/plugin marketplace add gergolencses-lab/proposal-toolkit
+/plugin install proposal@zel</pre>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span>proposal · MIT © 2026 <a href="https://www.zel-group.com">ZEL Group</a></span>
+    <span><a href="https://github.com/gergolencses-lab/proposal-toolkit">github.com/gergolencses-lab/proposal-toolkit</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* copy buttons */
+  document.querySelectorAll('button.copy').forEach(function(b){
+    b.addEventListener('click', function(){
+      navigator.clipboard.writeText(b.dataset.copy).then(function(){
+        b.textContent='másolva ✓'; setTimeout(function(){b.textContent='másolás';},1600);
+      }).catch(function(){ b.textContent='⌘C kézzel'; });
+    });
+  });
+
+  /* hero deal.md chip demo */
+  var chip=document.getElementById('chip'), sl=document.getElementById('statusline');
+  var r1=document.getElementById('r1'), r2=document.getElementById('r2'), r3=document.getElementById('r3');
+  var frames=[
+    {s:'new',       r:['—','—','—']},
+    {s:'discovery', r:['08-05','—','—']},
+    {s:'solutioning',r:['08-05','08-05','—']},
+    {s:'solutioning',r:['08-05','08-05','08-07']},
+    {s:'sent',      r:['08-05','08-05','08-07']}
+  ];
+  if(!reduce){
+    var fi=0;
+    setInterval(function(){
+      fi=(fi+1)%frames.length; var f=frames[fi];
+      chip.textContent=f.s; sl.textContent=f.s;
+      r1.textContent=f.r[0]; r2.textContent=f.r[1]; r3.textContent=f.r[2];
+    }, 2200);
+  }
+
+  /* scroll reveals */
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.18});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  /* spine fill + step lighting + chip follows scroll inside lifecycle */
+  var spine=document.getElementById('spinefill');
+  var fc=document.getElementById('floatchip'), chip2=document.getElementById('chip2');
+  var stepsWrap=document.querySelector('.steps');
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  function onScroll(){
+    var r=stepsWrap.getBoundingClientRect();
+    var vh=innerHeight;
+    var total=r.height;
+    var passed=Math.min(Math.max(vh*0.55 - r.top, 0), total);
+    spine.style.height=passed+'px';
+    fc.classList.toggle('on', r.top < vh*0.5 && r.bottom > vh*0.25);
+    steps.forEach(function(s){
+      var sr=s.getBoundingClientRect();
+      var lit = sr.top < vh*0.55;
+      s.classList.toggle('lit', lit);
+      if(lit){
+        var st=s.dataset.status;
+        if(st && st!=='—'){ chip2.textContent=st; }
+      }
+    });
+  }
+  if(!reduce){
+    addEventListener('scroll', onScroll, {passive:true});
+    addEventListener('resize', onScroll);
+    onScroll();
+  } else {
+    spine.style.height='100%';
+    steps.forEach(function(s){s.classList.add('lit');});
+  }
+})();
+</script>
+</body>
+</html>
