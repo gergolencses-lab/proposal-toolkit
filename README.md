@@ -1,12 +1,23 @@
-# proposal — ajánlat-workflow Claude Code-hoz
+# proposal — ajánlat-workflow Claude Coworkhöz
 
-Claude Code plugin egy end-to-end B2B ajánlatkészítési workflow-hoz. Öt skillből áll, amik egymásra épülnek: egyszer kalibrálod a céged a valódi múltbeli ajánlataidból, utána minden új dealt ezen a bekalibrált alapon futtatsz végig — verifikált revíziós körökkel, számítási és ár-kapukkal, ember által kontrollált kiküldéssel.
+Plugin egy end-to-end B2B ajánlatkészítési workflow-hoz. Öt skillből áll, amik egymásra épülnek: egyszer kalibrálod a céged a valódi múltbeli ajánlataidból, utána minden új dealt ezen a bekalibrált alapon futtatsz végig — verifikált revíziós körökkel, számítási és ár-kapukkal, ember által kontrollált kiküldéssel. Claude Coworkben és Claude Code-ban ugyanaz a plugin fut.
 
-*An end-to-end B2B proposal workflow for Claude Code: calibrate once from your own past offers, then decode, assemble, and revise every new deal on that calibrated base. Hungarian-first; the method is language-agnostic.*
+*An end-to-end B2B proposal workflow for Claude Cowork (and Claude Code): calibrate once from your own past offers, then decode, assemble, and revise every new deal on that calibrated base. Hungarian-first; the method is language-agnostic.*
 
 **A plugin nem tartalmaz és nem gyűjt cégadatot.** Nincs beégetett napidíj, horgony-ár, stílus vagy útvonal — minden kalibráció az `init` futásakor, a te gépeden, a saját memória-könyvtáradban jön létre, és ott is marad. A repo a módszert adja; a számok a tieid.
 
 ## Telepítés
+
+**Claude Cowork** — a `Customize` panelből, terminál nélkül:
+
+1. `Customize` → `Plugins` fül → jobbra fent `Add` → **Add marketplace**
+2. **Add from a repository** (a második opció; az első a hivatalos Anthropic-katalógus)
+3. Írd be a `gergolencses-lab/proposal-toolkit` címet → **Sync**
+4. A `Yours` fül alatt megjelenő marketplace-ben a `proposal` bővítményen nyomj **Install**-t
+
+Képernyőképes útmutató: **https://gergolencses-lab.github.io/proposal-toolkit/#telepites**
+
+**Claude Code** — ugyanez két paranccsal:
 
 ```
 /plugin marketplace add gergolencses-lab/proposal-toolkit
@@ -88,7 +99,7 @@ A `scripts/check.sh` ellenőrzi a plugin higiénéjét: érvényes-e minden JSON
 
 ## Hogyan működik — vizuálisan
 
-A workflow magyarázó oldala: **https://gergolencses-lab.github.io/proposal-toolkit/**
+A workflow magyarázó oldala — folyamat, ellenőrzések, képernyőképes telepítés: **https://gergolencses-lab.github.io/proposal-toolkit/**
 
 ## Licenc
 

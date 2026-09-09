@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>proposal — ajánlat-workflow Claude Code-hoz</title>
-<meta name="description" content="Öt egymásra épülő Claude Code skill: egyszer kalibrálsz a saját múltbeli ajánlataidból, utána minden dealt ezen az alapon futtatsz végig, kapukkal, verifikált revízióval, emberi kiküldéssel.">
+<title>proposal — ajánlat-workflow Claude Coworkhöz</title>
+<meta name="description" content="Öt egymásra épülő skill a Claude Coworkben: egyszer kalibrálsz a saját múltbeli ajánlataidból, utána minden dealt ezen az alapon futtatsz végig, kapukkal, verifikált revízióval, emberi kiküldéssel.">
 <style>
 :root{
   --bg:#141619; --bg2:#1a1d21; --ink:#eceae6; --ink2:#a3a49f; --ink3:#6d6f6a;
@@ -132,6 +132,33 @@ footer{border-top:1px solid var(--hair)}
 .foot a{color:var(--ink2);text-decoration:none;border-bottom:1px solid transparent}
 .foot a:hover{color:var(--ink);border-color:var(--red)}
 
+/* ── telepítés ── */
+.setup{border-top:1px solid var(--hair);padding:88px 0}
+.setup h2{font-size:clamp(1.9rem,4vw,3rem);letter-spacing:-.025em}
+.setup p.sub{color:var(--ink2);max-width:38em;margin:10px 0 60px}
+.sstep{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:40px;align-items:start;padding-bottom:56px}
+@media(max-width:900px){.sstep{grid-template-columns:minmax(0,1fr);gap:16px;padding-bottom:44px}}
+.sstep .num{font-family:var(--mono);font-size:11.5px;color:var(--red);letter-spacing:.14em}
+.sstep h3{font-size:1.3rem;letter-spacing:-.015em;line-height:1.2;margin-top:9px}
+.sstep p{color:var(--ink2);font-size:15.5px;margin-top:11px;max-width:34em}
+.sstep p b{color:var(--ink);font-weight:600}
+.sstep p code,.setup .note code{font-family:var(--mono);font-size:.88em;color:var(--ink)}
+img.shot{display:block;width:100%;height:auto;border:1px solid var(--hair);transition:border-color .25s}
+a.shotlink{display:block;cursor:zoom-in}
+a.shotlink:hover img.shot,a.shotlink:focus-visible img.shot{border-color:var(--red)}
+a.shotlink:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.setup .note{border-top:1px solid var(--hair2);padding-top:26px;color:var(--ink3);font-size:14px;max-width:44em}
+.setup .note b{color:var(--ink2);font-weight:600}
+.alt{margin-top:40px;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:40px;align-items:center;
+  border-top:1px solid var(--hair);padding-top:40px}
+@media(max-width:900px){.alt{grid-template-columns:minmax(0,1fr);gap:18px}}
+.alt p{color:var(--ink3);font-size:14px;max-width:30em}
+.alt .install{margin-top:0}
+@media(max-width:520px){.install pre{font-size:12px}.install pre .cmt{display:none}}
+.install-alt{margin-top:13px;font-family:var(--mono);font-size:12.5px;color:var(--ink3)}
+.install-alt a{text-decoration:none;color:var(--ink2);border-bottom:1px solid var(--red)}
+.install-alt a:hover{color:var(--ink)}
+
 @media (prefers-reduced-motion: reduce){
   .reveal{opacity:1;transform:none;transition:none}
   html{scroll-behavior:auto}
@@ -142,7 +169,7 @@ footer{border-top:1px solid var(--hair)}
 <!--
 THESIS: az ajánlat-workflow nem varázslat, hanem állapotgép — a lap gerince maga a deal.md státusz-átmenete; elutasítja a feature-kártyarácsos plugin-landingot.
 OWN-WORLD: ZEL Style D sötétben — charcoal alap (#141619), egyetlen signal-red (#e8352b), Helvetica-first, hairline-vonalak, mono a parancsoknak és állapotoknak; tartalom nélkül is felismerhető: vonal + piros chip + rombusz-csomópontok.
-STORY: a látogató (Gergő kliense, vezető) megérti: egyszer kalibrál a saját ajánlataiból, a plugin nem viszi el az adatait, a folyamat kapuknál megáll — és két sorral telepíti.
+STORY: a látogató (Gergő kliense, vezető) megérti: egyszer kalibrál a saját ajánlataiból, a plugin nem viszi el az adatait, a folyamat kapuknál megáll — és képernyőképes lépéssorral telepíti Coworkbe (Claude Code másodlagos út).
 FIRST VIEWPORT: bal 7 oszlop cím + lede + telepítő parancsblokk; jobb 5 oszlop élő deal.md-kártya váltakozó státusz-chippel; alul mono megjegyzés.
 FORM: brand-horgonyzott (Style D), nem sorsolt — a megrendelő pinned házi stílusa; seed: n/a.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
@@ -156,6 +183,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <nav class="mast-links" aria-label="Fő navigáció">
       <a href="#folyamat">A folyamat</a>
       <a href="#kapuk">Ellenőrzések</a>
+      <a href="#telepites">Telepítés</a>
       <a href="https://github.com/gergolencses-lab/proposal-toolkit">GitHub</a>
     </nav>
   </div>
@@ -167,11 +195,11 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       <h1>A következő ajánlatod nem nulláról indul<span class="dot">.</span></h1>
       <p class="lede">A Proposal Toolkit a <strong>korábbi ajánlataid alapján alkalmazkodik hozzád</strong>. Segít tisztázni a nyitott kérdéseket, végigvezet az ajánlat elkészítésén, és biztos alapot ad ahhoz, hogy bátran árazd az értéket, amit teremtesz.</p>
       <div class="install">
-        <div class="install-bar"><span>CLAUDE CODE</span><button class="copy" data-copy="/plugin marketplace add gergolencses-lab/proposal-toolkit
-/plugin install proposal@zel">másolás</button></div>
-        <pre>/plugin marketplace add gergolencses-lab/proposal-toolkit
-/plugin install proposal@zel   <em># ennyi</em></pre>
+        <div class="install-bar"><span>CLAUDE COWORK</span><button class="copy" data-copy="gergolencses-lab/proposal-toolkit">másolás</button></div>
+        <pre><em>Customize → Plugins → Add marketplace</em>
+gergolencses-lab/proposal-toolkit   <em class="cmt"># ennyi</em></pre>
       </div>
+      <p class="install-alt"><a href="#telepites">Képernyőképes útmutató ↓</a> · Claude Code-ból is megy</p>
     </div>
     <div>
       <div class="dealcard" aria-label="Példa deal-állapotfájl">
@@ -296,6 +324,55 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   </div>
 </section>
 
+<section class="setup" id="telepites">
+  <div class="wrap">
+    <h2>Telepítés — három lépés<span style="color:var(--red)">.</span></h2>
+    <p class="sub">A Cowork <span style="font-family:var(--mono);font-size:.88em">Customize</span> paneljéből megy, terminál és fejlesztői eszköz nélkül. Körülbelül egy perc.</p>
+
+    <article class="sstep reveal">
+      <div>
+        <div class="num">01</div>
+        <h3>Customize → Plugins → Add</h3>
+        <p>A Cowork oldalsávjában nyisd meg a <b>Customize</b> panelt, válts a <b>Plugins</b> fülre, majd jobbra fent: <b>Add → Add marketplace</b>.</p>
+      </div>
+      <a class="shotlink" href="img/cowork-1-add-marketplace.png" target="_blank" rel="noopener"><img class="shot" src="img/cowork-1-add-marketplace.png" width="928" height="280" loading="lazy"
+           alt="A Cowork Customize panelje a Plugins fülön, nyitott Add menüvel, benne az Add marketplace ponttal"></a>
+    </article>
+
+    <article class="sstep reveal">
+      <div>
+        <div class="num">02</div>
+        <h3>Add from a repository</h3>
+        <p>A felugró ablakban a második opció kell: <b>Add from a repository</b>. Az első a hivatalos Anthropic-katalógus — ez a bővítmény nem abban van.</p>
+      </div>
+      <a class="shotlink" href="img/cowork-2-add-from-repository.png" target="_blank" rel="noopener"><img class="shot" src="img/cowork-2-add-from-repository.png" width="729" height="291" loading="lazy"
+           alt="Add marketplace ablak két opcióval: Browse Anthropic sources és Add from a repository"></a>
+    </article>
+
+    <article class="sstep reveal">
+      <div>
+        <div class="num">03</div>
+        <h3>A repó megadása, majd Sync</h3>
+        <p>Írd be a <code>gergolencses-lab/proposal-toolkit</code> címet, és nyomd meg a <b>Sync</b> gombot. A piros figyelmeztetés minden nem-Anthropic bővítménynél megjelenik: a marketplace-ből telepített pluginért a szerzője felel, nem az Anthropic.</p>
+      </div>
+      <a class="shotlink" href="img/cowork-3-sync-repository.png" target="_blank" rel="noopener"><img class="shot" src="img/cowork-3-sync-repository.png" width="726" height="344" loading="lazy"
+           alt="Add marketplace ablak a repó URL mezőjével és a Sync gombbal"></a>
+    </article>
+
+    <p class="note"><b>Utolsó lépés:</b> a szinkron után a marketplace a <b>Yours</b> fül alatt jelenik meg — nyisd meg, és a <code>proposal</code> bővítményen nyomj <b>Install</b>-t. Ezután mind az öt skill elérhető; kezdd a <code>/proposal:init</code> kalibrációval, utána már csak a <code>/proposal:drive</code> kell.</p>
+
+    <div class="alt">
+      <div class="install">
+        <div class="install-bar"><span>CLAUDE CODE</span><button class="copy" data-copy="/plugin marketplace add gergolencses-lab/proposal-toolkit
+/plugin install proposal@zel">másolás</button></div>
+        <pre>/plugin marketplace add gergolencses-lab/proposal-toolkit
+/plugin install proposal@zel</pre>
+      </div>
+      <p>Ha Claude Code-ot használsz, ez a két parancs ugyanezt teszi. Mindkét felületen ugyanaz a bővítmény fut — a különbség csak a telepítés útja.</p>
+    </div>
+  </div>
+</section>
+
 <section class="close">
   <div class="wrap close-grid">
     <div>
@@ -305,10 +382,9 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
     <div class="install">
-      <div class="install-bar"><span>TELEPÍTÉS</span><button class="copy" data-copy="/plugin marketplace add gergolencses-lab/proposal-toolkit
-/plugin install proposal@zel">másolás</button></div>
-      <pre>/plugin marketplace add gergolencses-lab/proposal-toolkit
-/plugin install proposal@zel</pre>
+      <div class="install-bar"><span>CLAUDE COWORK</span><button class="copy" data-copy="gergolencses-lab/proposal-toolkit">másolás</button></div>
+      <pre><em>Customize → Plugins → Add marketplace</em>
+gergolencses-lab/proposal-toolkit</pre>
     </div>
   </div>
 </section>
